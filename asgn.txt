@@ -1,0 +1,186 @@
+#!/bin/sh
+
+clear
+
+banner Welcome
+echo Welcome to Administration Menu!
+option=y
+while [ $option = "y" ]
+do
+	echo Please choose menu
+	echo 1. Performance
+	echo 2. Logging
+	echo 3. Security
+	read option1
+
+	#Using nested if-elif loop for menu
+	if [ $option1 == 1 ]
+	then
+		echo What do you want to do?
+		echo 1. Show process status
+		echo 2. Kill process
+		echo 3. Show current network statics
+		echo 4. Show input and output statics
+		echo 5. Show uptime
+		read opt1
+		
+		#if-elif loop for second menu
+		#To check user process
+		if [ $opt1 == 1 ]
+		then
+			echo Which user process are you looking for?
+			read optUser
+			ps -u $optUser
+			echo Here is the process status above
+
+		#To kill user process
+		elif [ $opt1 == 2 ]
+		then
+			echo Which user process do you want to kill?
+			read optUser
+			ps -u $optUser
+			echo Please enter PID to kill
+			read killPID
+			kill -9 $killPID
+			echo The process has been successfully killed
+
+		#To check current network statistic
+		elif [ $opt1 == 3 ]
+		then
+			echo Here is the current network statistic
+			netstat -i
+
+		#To check I/O statistic
+		elif [ $opt1 == 4 ]
+		then
+			echo Here is the input and output statistic
+			iostat
+
+		#To check uptime
+		elif [ $opt1 == 5 ]
+		then
+			echo Here is the uptime
+			uptime
+		fi
+		#end of first menu	
+
+	#Top of second menu
+	elif [ $option1 == 2 ]
+	then
+		echo What do you want to do?
+		echo 1. Last log
+		echo 2. Last reboot log
+		echo 3. Last specific user log
+		echo 4. User currently online
+		echo 5. Specific user detail
+		read opt2
+
+		#To check last log
+		if [ $opt2 == 1 ]
+		then
+			last
+			echo Log successfully loaded		
+
+		#To check last reboot log
+		elif [ $opt2 == 2 ]
+		then
+			last reboot
+			echo Log successfully loaded
+
+		#To check last specific user log
+		elif [ $opt2 == 3 ]
+		then
+			echo Which user do you want to check log?
+			read logUser
+			last -a $logUser
+			echo Log successfully loaded
+
+		#To check current user online
+		elif [ $opt2 == 4 ]
+		then
+			w
+			echo Above users are online now
+
+		#To check specific user detail
+		elif [ $opt2 == 5 ]
+		then
+			echo Which user do you want to check?
+			read logUser
+			finger $logUser
+			id $logUser
+			echo Log successfully loaded
+		fi
+		#End of second menu
+
+	#Top of third menu			
+	elif [ $option1 == 3 ]
+	then
+		echo What do you want to do?
+		echo 1. Umask setting: umask
+		echo 2. Change owner: chown
+		echo 3. Change permission: chmod
+		echo 4. Encrypt File
+		echo 5. Decrypt File
+		read opt3
+		
+		#To perform umask setting: umask
+		if [ $opt3 == 1 ]
+		then
+			echo Here are the details
+			umask
+			umask -S
+			echo Please enter umask value
+			read umaskNum
+			umask $umaskNum
+			umask
+			umask -S
+			echo Successfully changed
+		
+		#To perform change ownership
+		elif [ $opt3 == 2 ]
+		then
+			echo Please enter user name to change ownership
+			read chUser
+			ls -l
+			echo Please enter file name to change ownership
+			read chFile
+			chown $chUser $chFile
+			ls -l | grep $chFile
+			echo Successfully changed
+
+		elif [ $opt3 == 3 ]
+		then 
+			echo Please enter the permission value
+			read permVal
+			ls -l
+			echo Please enter the file name to change
+			read permFile
+			chmod $permVal $permFile
+			ls -l | grep $permFile
+			echo Successfully changed
+
+		elif [ $opt3 == 4 ]
+		then
+			ls -l
+			echo Please enter the file name for encryption
+			read enFile
+			encrypt -a aes -i $enFile -o $enFile
+			cat $enFile
+			echo Successfully encrypted
+
+		elif [ $opt3 == 5 ]
+		then
+			ls -l
+			echo Please enter the file name for decryption
+			read deFile
+			decrypt -a aes -i $deFile -o $deFile
+			cat $deFile
+			echo Successfully decrypted		 
+		fi
+
+	fi
+
+	echo All results out now!
+	echo Do you like to continue? y/n
+	read option
+done
